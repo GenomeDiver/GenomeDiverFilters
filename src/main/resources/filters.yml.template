@@ -1,0 +1,38 @@
+# --------------------------------------------------------------------------
+# Filter (1) "Variant Ranking"
+# --------------------------------------------------------------------------
+# - High REMM Score
+# - Whitelisted Functional Classes (Sequence Ontology)
+# - Discard clinvar "BENIGN" unless conflicting
+
+filter_1:
+    functional_classes: ["FRAMESHIFT_ELONGATION", "FRAMESHIFT_TRUNCATION",
+    "FRAMESHIFT_VARIANT", "INTERNAL_FEATURE_ELONGATION", "FEATURE_TRUNCATION",
+    "STOP_GAINED", "STOP_LOST", "START_LOST", "SPLICE_ACCEPTOR_VARIANT",
+    "SPLICE_DONOR_VARIANT", "MISSENSE_VARIANT", "INFRAME_INSERTION",
+    "DISTRUPTIVE_INFRAME_INSERTION", "INFRAME_DELETION", "DISRUPTIVE_INFRAME_DELETION",
+    "SPLICE_REGION_VARIANT", "REGULATORY_REGION_VARIANT", "CUSTOM"]
+    remm_min: 0.5
+
+# --------------------------------------------------------------------------
+# Filter (2) "Phenotype Ranking"
+# --------------------------------------------------------------------------
+# - Using [TOP K] uniquely valued gene_phenotype_score
+# - Filer EXOMISER_VARIANT_SCORE
+# - Use HPO Annotations / Ontology to recommend Phenotypes
+# - Establish "distinct phenotypes" from a list of candidates
+
+filter_2:
+    hpo_ontology: "./hp.obo"
+    hpo_annotation: "./ALL_SOURCES_ALL_FREQUENCIES_genes_to_phenotype.txt"
+    top_k: 20
+    variant_score_min: 0.9
+
+# --------------------------------------------------------------------------
+# Filter (3)
+# --------------------------------------------------------------------------
+# - Extract [TOP V] variants from the second run of Exomiser w/ updated
+#   inputs (VCF, HPO)
+
+filter_3:
+    top_v: 5

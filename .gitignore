@@ -1,0 +1,64 @@
+# Scala Targets/Classes
+target
+*.class
+
+# Python Scripts
+.env/
+
+# Ontology Related Files
+*.obo
+*.owl
+scripts/**/data
+
+# Typesafe Config Object
+application.conf
+
+# Anything Generated from scripts
+*.generated.*
+*.dump
+
+# Jooq
+jooq-codegen.xml
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea
+out
+
+# vim
+tags
+.*.swp
+.*.swo
+
+# OSX
+.DS_Store
+
+# Shell
+/*.sh
+
+# Binaries
+*.tab
+
+# Accidentally moved some VCF files
+*.vcf
+*.vcf.gz
+
+# Notes
+notes-private
+notes-goals*
+
+# Frontend Build Artifacts
+src/main/resources/build
+
+# ignore tests for now
+tests/**
+
+# nextflow testing
+.nextflow
+.nextflow.log*
+debug.log
+work
+
+scratch
