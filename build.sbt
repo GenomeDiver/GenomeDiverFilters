@@ -15,30 +15,20 @@ unmanagedBase := baseDirectory.value / "libs"
 
 libraryDependencies ++= Seq(
 "dev.zio" %% "zio-logging" % "2.1.9",
-
-//"org.apache.logging.log4j" % "log4j-api-scala_2.13" % "12.0",
-//"org.apache.logging.log4j" % "log4j-api" % "2.20.0",
-//"org.apache.logging.log4j" % "log4j-core" % "2.20.0" % Runtime,
-
-//"com.typesafe.scala-logging" %% "scala-logging" %  "3.9.2",
-//"org.slf4j" % "slf4j-api" % "1.7.30",
-//"org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.13.3",
-
-//"org.apache.logging.log4j" %% "log4j-api-scala" % "12.0",
-//"org.apache.logging.log4j" % "log4j-api" % "2.18.0",
-//"org.apache.logging.log4j" % "log4j-core" % "2.18.0",
 "org.scalanlp" %% "breeze" % "2.1.0",
 "org.apache.spark" %% "spark-core" % "3.3.0",
 "org.apache.spark" %% "spark-sql" % "3.3.0", 
-"org.monarchinitiative.phenol" % "phenol-core" % "2.0.0-RC4",
-"org.monarchinitiative.phenol" % "phenol-io" % "2.0.0-RC4",
-"org.monarchinitiative.phenol" % "phenol-annotations" % "2.0.0-RC4",
-"com.github.scopt" %% "scopt" % "4.1.0",
-"org.typelevel" %% "cats-core" % "2.9.0"
+"com.github.scopt" %% "scopt" % "4.1.0"
+//"org.monarchinitiative.phenol" % "phenol-core" % "2.0.0-RC4",
+//"org.monarchinitiative.phenol" % "phenol-io" % "2.0.0-RC4",
+//"org.monarchinitiative.phenol" % "phenol-annotations" % "2.0.0-RC4",
+// "org.typelevel" %% "cats-core" % "2.9.0"
 )
 
+// mainClass in assembly := Some("com.domain.Main")
 
-assemblyMergeStrategy in assembly := {
+// ... Spark 
+assembly / assemblyMergeStrategy := {
   case PathList("org","aopalliance", xs @ _*) => MergeStrategy.last
   case PathList("javax", "inject", xs @ _*) => MergeStrategy.last
   case PathList("javax", "servlet", xs @ _*) => MergeStrategy.last
@@ -50,6 +40,10 @@ assemblyMergeStrategy in assembly := {
   case PathList("com", "esotericsoftware", xs @ _*) => MergeStrategy.last
   case PathList("com", "codahale", xs @ _*) => MergeStrategy.last
   case PathList("com", "yammer", xs @ _*) => MergeStrategy.last
+  case PathList("com", "fasterxml", xs @ _*) => MergeStrategy.first
+  case PathList("org", "slf4j", xs @ _*) => MergeStrategy.last
+  case PathList("org", "antlr", xs @ _*) => MergeStrategy.last
+  case PathList("google", "protobuf", xs @ _*) => MergeStrategy.last
   case "module-info.class" => MergeStrategy.discard
   case "git.properties" => MergeStrategy.discard
   case "about.html" => MergeStrategy.rename
@@ -63,7 +57,7 @@ assemblyMergeStrategy in assembly := {
   case "log4j.properties" => MergeStrategy.last
   case "overview.html" => MergeStrategy.last  // Added this for 2.1.0 I think
   case x =>
-    val oldStrategy = (assemblyMergeStrategy in assembly).value
+    val oldStrategy = (assembly / assemblyMergeStrategy).value
     oldStrategy(x)
+    // MergeStrategy.last
 }
-// See https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html for instructions on how to publish to Sonatype.

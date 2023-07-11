@@ -183,14 +183,16 @@ object PhenotypeRecommendation {
         disease_map.get(TermId.of(d)),
       phenotypeService.hpo()))
     }
-        
+
+    // TODO: investigate LR,. should be -3 .. +3
+    // ... manually run through lirical-cli 
     val data = possible_hpo.toSeq.map(hpo_id => {
       val scores = disease_guess.map(disease_id =>
         pheno_lr.lrForObservedTerm(
           TermId.of(hpo_id),
           idg_cache(disease_id)
-        ).lr()
-      )
+        ).lr())
+      
       val best_guess = disease_guess.zip(scores).sortBy(_._2)(Ordering.Double.IeeeOrdering).last._1
       val vector = breeze.linalg.Vector[Double](scores.toArray)
       val mean = breeze.stats.mean(vector)
