@@ -1,8 +1,0 @@
-2023.02.24 02:19:06 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at /home/kshi/gd-data/recommend/recommendation/src/.metals/lsp.trace.json or /home/kshi/.cache/metals/lsp.trace.json[0m
-2023.02.24 02:19:07 INFO  logging to file /home/kshi/gd-data/.metals/metals.log[0m
-2023.03.03 19:13:03 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at /home/kshi/gd-data/recommend/recommendation/src/.metals/lsp.trace.json or /home/kshi/.cache/metals/lsp.trace.json[0m
-2023.03.03 19:13:04 INFO  logging to file /home/kshi/gd-data/recommend/recommendation/.metals/metals.log[0m
-2023.03.03 19:35:55 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at /home/kshi/gd-data/recommend/recommendation/src/.metals/lsp.trace.json or /home/kshi/.cache/metals/lsp.trace.json[0m
-2023.03.03 19:35:55 INFO  logging to file /home/kshi/gd-data/recommend/recommendation/.metals/metals.log[0m
-2023.07.11 17:59:53 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at /home/kshi/gd-data/recommend/recommendation/src/.metals/lsp.trace.json or /home/kshi/.cache/metals/lsp.trace.json[0m
-2023.07.11 17:59:54 INFO  logging to file /home/kshi/gd-data/recommend/recommendation/.metals/metals.log[0m
