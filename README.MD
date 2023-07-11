@@ -1,12 +1,14 @@
-Genomic and Phenotypic filters for Genome Diver. The executable is ran by Genome Diver via Nextflow. 
+Phenotypic filters for Genome Diver. 
+The executable is ran by Genome Diver via Nextflow. 
 
 ### Usage 
 - - - 
-- Run sbt packageBin to create a jar file from sources.  
+Run sbt packageBin to create a jar file from sources.  
+Run run-blank-example.sh to see parameters 
 
 ### Dependencies
 - - - 
-- Filters depend on Exomiser output (TSV) as well the Lirical data folder. 
+Filters depend on Exomiser output (TSV) as well the Lirical data folder. 
 
 ### Discussion
 - - - 
