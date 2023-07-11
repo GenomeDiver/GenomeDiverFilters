@@ -3,7 +3,7 @@ is ran by Java under Nextflow.
 
 ### Usage 
 - - - 
-- Run sbt universal:packageBin to package into a jar file  
+- Run sbt packageBin to package into a jar file  
 
 ### Dependencies
 - - - 
