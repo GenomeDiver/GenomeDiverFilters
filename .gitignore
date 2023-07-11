@@ -1,4 +1,5 @@
-.metals/
-/.bsp/
+.*
+!/.gitignore
+
 trash/
 target/
