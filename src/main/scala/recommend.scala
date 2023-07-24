@@ -5,6 +5,7 @@ import scopt.OParser
 import zio.logging.console
 import scala.jdk.CollectionConverters._
 import collection.convert.ImplicitConversions._
+import scala.jdk.OptionConverters._
 
 import org.monarchinitiative.phenol.ontology.data.{Term, TermId}
 import org.monarchinitiative.phenol.annotations.io.hpo.DiseaseDatabase._
@@ -32,6 +33,7 @@ object PhenotypeRecommendation {
   case class Config(
     hpo:Seq[String] = Seq(), 
     num:Int = 20, 
+    sex:String = "UNKNOWN",
     lirical_data:File = new File("."),
     genes_tsv:File = new File("."),
     ontology:File = new File("."),
@@ -58,6 +60,11 @@ object PhenotypeRecommendation {
         .required().valueName("<hpo1>, <hpo2>")
         .action((x, c) => c.copy(hpo = x))
         .text("hpo is a required property. It is an input of Exomiser"),
+      opt[String]('s', "sex")
+        .optional()
+        .valueName("<sex>")
+        .action((x, c) => c.copy(sex = x))
+        .text("sex is optional. [MALE, FEMALE, UNKNOWN] Default is UNKNOWN"),
       opt[File]('g', "genes_tsv")
         .required()
         .valueName("<file>")
@@ -101,6 +108,7 @@ object PhenotypeRecommendation {
     val NUM_RECOMMEND = config.num
     val LIR_PATH = config.lirical_data.toPath
     val INPUT_HPO = config.hpo
+    val SEX = config.sex
     val GENES_TSV = config.genes_tsv.toPath
     val OUTPUT_HPO = config.output.toPath
     
@@ -147,6 +155,29 @@ object PhenotypeRecommendation {
       .option("header", true)
       .csv(GENES_TSV.toAbsolutePath.toString)
 
+    val schema = new StructType()
+      .add("DatabaseId",StringType,true)
+      .add("DB_Name",StringType,false)
+      .add("Qualifier",StringType,false)
+      .add("HPO_ID",StringType,false)
+      .add("DB_Reference",StringType,false)
+      .add("Evidence",StringType,false)
+      .add("Onset",StringType,false)
+      .add("Frequency",StringType,false)
+      .add("Sex",StringType,false)
+      .add("Modifier",StringType,false)
+      .add("Aspect",StringType,false)
+      .add("BiocurationBy",StringType,false)
+
+    val hpoa = spark.read
+      .option("delimiter", "\t")
+      .option("header", "false")
+      .option("comment", "#")
+      .schema(schema)
+      .csv(LIR_PATH.resolve("phenotype.hpoa").toAbsolutePath.toString)
+
+    hpoa.show()
+    
     val top_genes = genes.select("GENE_SYMBOL", "MOI", "EXOMISER_GENE_COMBINED_SCORE", 
       "EXOMISER_GENE_PHENO_SCORE", "EXOMISER_GENE_VARIANT_SCORE", "HUMAN_PHENO_EVIDENCE", 
       "HUMAN_PPI_EVIDENCE").limit(10)
@@ -165,10 +196,19 @@ object PhenotypeRecommendation {
 
     // All phenotypes associated with diseases 
     val possible_hpo:Set[String] = disease_guess.foldLeft(Set.empty[String])(
-      (acc, db_id) => {acc.union(
-        disease_map.get(TermId.of(db_id)).annotationStream
-          .iterator.asScala.map(_.id.toString).toSet
-    )}).diff(
+      (acc, db_id) => {
+        val annotation = disease_map.get(TermId.of(db_id)).annotationStream.iterator.asScala.toList
+        val filtered_by_sex = annotation.map(_.id.toString).toSet.filter((hpo_id) => {
+            val counts = hpoa.select("*")
+              .where(col("DatabaseId") === db_id)
+              .where(col("HPO_ID") === hpo_id)
+              .where(col("Sex").isin(List(SEX):_*) || col("Sex").isNull)
+              .count()
+          
+            counts > 0
+        })
+        acc.union(filtered_by_sex)
+      }).diff(
         // - hpo already specified 
         // - the ancestors of specified
         INPUT_HPO.foldLeft(INPUT_HPO.toSet)( 
